@@ -1,0 +1,53 @@
+// Componente de Estoque (Sujeito)
+class Estoque {
+  constructor() {
+    this.observers = [];
+    this.produtos = [];
+  }
+
+  adicionarObserver(observer) {
+    this.observers.push(observer);
+  }
+
+  removerObserver(observer) {
+    this.observers = this.observers.filter((o) => o !== observer);
+  }
+
+  notificarObservers() {
+    this.observers.forEach((observer) => observer.notificar());
+  }
+
+  atualizarEstoque(produto, quantidade) {
+    // Atualiza o estoque do produto
+    this.produtos = this.produtos.map((p) => {
+      if (p.id === produto.id) {
+        p.quantidade = quantidade;
+      }
+      return p;
+    });
+
+    // Notifica os observers se o estoque atingir um nível crítico
+    if (quantidade <= 5) {
+      this.notificarObservers();
+    }
+  }
+}
+
+// Componente de Notificação (Observador)
+class Notificacao {
+  constructor(estoque) {
+    this.estoque = estoque;
+    this.estoque.adicionarObserver(this);
+  }
+
+  notificar() {
+    console.log("Estoque crítico! Enviando notificação...");
+    // Envia notificação para os usuários
+  }
+}
+
+// Uso
+const estoque = new Estoque();
+const notificacao = new Notificacao(estoque);
+
+estoque.atualizarEstoque({ id: 1, nome: "Produto A" }, 3);
